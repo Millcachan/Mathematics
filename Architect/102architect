@@ -1,0 +1,171 @@
+#!/usr/bin/python3
+
+from sys import *
+from math import *
+
+def matrix_product(matrix1, matrix2):
+    result = [[0 for _ in range(len(matrix2[0]))] for _ in range(len(matrix1))]
+
+    for i in range(len(matrix1)):
+        for j in range(len(matrix2[0])):
+            for k in range(len(matrix2)):
+                result[i][j] += matrix1[i][k] * matrix2[k][j]
+    return result
+
+def translation(matrix, i, j):
+    print("Translation along vector (", int(i), ", ", int(j), ")", sep="")
+    translation_matrix = [[1, 0, i],
+                          [0, 1, j],
+                          [0, 0, 1]]
+    matrix = matrix_product(translation_matrix, matrix)
+    return matrix
+
+def scaling(matrix, m, n):
+    print("Scaling by factors ", int(m), " and ", int(n), sep="")
+    scaling_matrix = [[m, 0, 0],
+                      [0, n, 0],
+                      [0, 0, 1]]
+    matrix = matrix_product(scaling_matrix, matrix)
+    return matrix
+
+def rotation(matrix, rd):
+    print("Rotation by a ", int(rd), " degree angle", sep="")
+    rd = rd * pi / 180
+    rotation_matrix = [[cos(rd), -sin(rd), 0],
+                       [sin(rd), cos(rd), 0],
+                       [0, 0, 1]]
+    matrix = matrix_product(rotation_matrix, matrix)
+    return matrix
+
+def reflection(matrix, sd):
+    print("Reflection over an axis with an inclination angle of ", int(sd), " degrees", sep="")
+    sd = sd * pi / 180
+    reflection_matrix = [[cos(2 * sd), sin(2 * sd), 0],
+                         [sin(2 * sd), -cos(2 * sd), 0],
+                         [0, 0, 1]]
+    matrix = matrix_product(reflection_matrix, matrix)
+    return matrix
+
+def zeros(matrix):
+    for y in range(len(matrix)):
+        for x in range(len(matrix[y])):
+            if round(matrix[y][x],2) == -0.00:
+                matrix[y][x] = 0.00
+    return matrix
+
+def help(argv):
+    if len(argv) == 2 and argv[1] == "-h":
+        print("USAGE")
+        print("    ./102architect x y transfo1 arg11 [arg12] [transfo2 arg21 [arg22]] ...\n")
+        print("DESCRIPTION")
+        print("    x abscissa of the original point")
+        print("    y ordinate of the original point\n")
+        print("    transfo arg1 [arg2]")
+        print("    -t i j translation along vector (i, j)")
+        print("    -z m n scaling by factors m (x-axis) and n (y-axis)")
+        print("    -r d rotation centered in O by a d degree angle")
+        print("    -s d reflection over the axis passing through O with an inclination")
+        print("         angle of d degrees")
+        exit(0)
+
+def error(argv):
+    try:
+        global x, y
+        x = float(argv[1])
+        y = float(argv[2])
+        test = str(argv[3])
+
+    except:
+        exit(84)
+
+    k = 3
+
+    while k < len(argv):
+        if argv[k] == "-t":
+            try:
+                i = float(argv[k + 1])
+                j = float(argv[k + 2])
+                k += 3
+                continue
+
+            except:
+                exit(84)
+
+        if argv[k] == "-z":
+            try:
+                m = float(argv[k + 1])
+                n = float(argv[k + 2])
+                k += 3
+                continue
+
+            except:
+                exit(84)
+
+        if argv[k] == "-r":
+            try:
+                rd = float(argv[k + 1])
+                k += 2
+                continue
+
+            except:
+                exit(84)
+
+        if argv[k] == "-s":
+            try:
+                sd = float(argv[k + 1])
+                k += 2
+                continue
+            except:
+                exit(84)
+
+        if argv[k] not in ["-z-s-t-r"]:
+            exit (84)
+
+def output(matrix):
+    finalx = matrix[0][0] * x + matrix[0][1] * y + matrix[0][2]
+    finaly = matrix[1][0] * x + matrix[1][1] * y + matrix[1][2]
+
+    print("%.2f" % float(matrix[0][0]), "\t%.2f" % float(matrix[0][1]), "\t%.2f" % float(matrix[0][2]))
+    print("%.2f" % float(matrix[1][0]), "\t%.2f" % float(matrix[1][1]), "\t%.2f" % float(matrix[1][2]))
+    print("%.2f" % float(matrix[2][0]), "\t%.2f" % float(matrix[2][1]), "\t%.2f" % float(matrix[2][2]))
+    if round(finalx,2) == -0.00:
+                finalx = 0.00
+    if round(finaly,2) == -0.00:
+                finaly = 0.00
+    print("(%.2f" % x, ", %.2f" % y ,") => (%.2f" % finalx,", %.2f" % finaly,")", sep = "")
+
+def calculation(argv):
+    matrix = [[1.00, 0.00, 0.00],
+              [0.00, 1.00, 0.00],
+              [0.00, 0.00, 1.00]]
+
+    for k in range(3, len(argv)):
+
+        if argv[k] == "-t":
+                i = float(argv[k + 1])
+                j = float(argv[k + 2])
+                matrix = translation(matrix, i, j)
+
+        if argv[k] == "-z":
+                m = float(argv[k + 1])
+                n = float(argv[k + 2])
+                matrix = scaling(matrix, m, n)
+
+        if argv[k] == "-r":
+                rd = float(argv[k + 1])
+                matrix = rotation(matrix, rd)
+
+        if argv[k] == "-s":
+                sd = float(argv[k + 1])
+                matrix = reflection(matrix, sd)
+
+    matrix = zeros(matrix)
+
+    return matrix
+
+def main():
+    help(argv)
+    error(argv)
+    output(calculation(argv))
+
+main()
