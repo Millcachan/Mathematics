@@ -1,0 +1,76 @@
+#!/usr/bin/python3
+
+import sys
+from math import *
+
+def create_vector(x, y, z):
+    return ((x, y, z))
+
+def sum_vector(v1, v2):
+    return (create_vector(v2[0] + v1[0], v2[1] + v1[1], v2[2] + v1[2]))
+
+def sub_vector(v1, v2):
+    return (create_vector(v2[0] - v1[0], v2[1] - v1[1], v2[2] - v1[2]))
+
+def x_vector(x, vector):
+    return((vector[0] * x, vector[1] * x, vector[2] * x))
+
+def vector_norm(vector):
+    return(sqrt(vector[0] ** 2 + vector[1] ** 2 + vector[2] ** 2))
+
+def position_ball(x0, y0, z0, x1, y1, z1, t):
+    return (sum_vector((x1, y1, z1), x_vector(t, (x1 - x0, y1 - y0, z1 - z0))))
+
+def get_angle_rad(vector):
+    return (asin(abs(vector[2]) / (sqrt(vector[0]**2 + vector[1]**2 + vector[2] ** 2))))
+
+def get_angle_deg(vector):
+    return ((get_angle_rad(vector)) * (180 / pi))
+
+def pong(x0, y0, z0, x1, y1, z1, t):
+
+    velocity_vector = sub_vector((x0, y0, z0), (x1, y1, z1))
+    position = position_ball(x0, y0, z0, x1, y1, z1, t)
+
+    if (t < 0):
+        exit(84)
+    print("The velocity vector of the ball is:")
+    print("(%.2f, %.2f, %.2f)" % velocity_vector)
+    print("At time t + %d, ball coordinates will be:" % t)
+    print("(%.2f, %.2f, %.2f)" % position)
+
+    if ((z1 < 0 and velocity_vector[2] < 0) or (z1 > 0 and velocity_vector[2] > 0) or (z1 != 0 and velocity_vector[2] == 0)):
+        print("The ball won't reach the paddle.")
+    else:
+        print("The incidence angle is:")
+        print("%.2f" % (get_angle_deg(velocity_vector)), "degrees")
+    return (0)
+
+if len(sys.argv) == 2 and sys.argv[1] == "-h":
+    print("USAGE")
+    print("    ./101pong x0 y0 z0 x1 y1 z1 n\n")
+    print("DESCRIPTION")
+    print("    x0  ball abscissa at time t - 1")
+    print("    y0  ball ordinate at time t - 1")
+    print("    z0  ball altitude at time t - 1")
+    print("    x1  ball abscissa at time t")
+    print("    y1  ball ordinate at time t")
+    print("    z1  ball altitude at time t")
+    print("    n   time shift (greater than or equal to zero, integer)")
+    exit(0)
+
+if (len(sys.argv) == 8):
+    try:
+        test = float(sys.argv[1])
+        test = float(sys.argv[2])
+        test = float(sys.argv[3])
+        test = float(sys.argv[4])
+        test = float(sys.argv[5])
+        test = float(sys.argv[6])
+        test = int(sys.argv[7])
+    except:
+        exit(84)
+    pong(float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4]), float(sys.argv[5]), float(sys.argv[6]), int(sys.argv[7]))
+    exit(0)
+else:
+    exit(84)
