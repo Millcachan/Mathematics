@@ -10,6 +10,6 @@ Architect : 46/46 - 100%
 
 Cypher : 29/29 - 100%
 
-Neutrinos : ?
+Neutrinos : 12/16 - 75%
 
 Demography : ?
