@@ -2,7 +2,7 @@
 
 Some EPITECH Mathematics Project in Python.
 
-Grade : ?
+Grade : A
 
 Pong : 31/31 - 100%
 
@@ -12,4 +12,4 @@ Cypher : 29/29 - 100%
 
 Neutrinos : 12/16 - 75%
 
-Demography : ?
+Demography : 28/28 - 100%
